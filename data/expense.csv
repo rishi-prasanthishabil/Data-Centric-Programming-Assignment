@@ -28,3 +28,4 @@ Transaction_ID,Transaction_Name,Date,Type,Category,Amount
 27,Leap Card,21/11/2026,Online,Transport,5.00
 28,Dunnes Stores,22/11/2026,Cash,Clothing,23.00
 29,Lidl,22/11/2026,Card,Groceries,11.30
+30,Lidl,23/11/2026,Card,Food,1.79
