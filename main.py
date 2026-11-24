@@ -1,74 +1,63 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Reading expense.csv
-df = pd.read_csv("data/expense.csv")
+
+# Main Menu function
+def main_menu():
+    print("\n\n\nEXPENSE TRACKER")
+    print("Main Menu")
+    print("1. View all transactions")
+    print("2. Monthly expense report")
+    print("3. Exit program")
+
+    option = int(input("\nSelect an option: "))
+    return option
 
 
 
-# 1. Printing all transactions
-print(df.to_string(index = False))
+# Month Menu function
+def month_menu():
+    i = 1
+
+    print("\nList of Months:")
+    for month in months:
+        print(f"{i}. {month}")
+        i += 1
+
+    month_option = int(input("Select a month to analyse: "))
+    return months[month_option - 1]
 
 
 
-# 2. Printing total money spent
-total_spent = df["Amount"].sum()
-
-print(f"\n\nTotal spent = {total_spent}")
-
-
-
-# 3. Printing total spent by each category
-print("\n\nTotal Spent by Category")
-category_spending = df.groupby("Category")["Amount"].sum()
-print(category_spending.sort_values(ascending = False))
+# Function all_transactions()
+# Displays all transactions
+#
+def all_transactions():
+    print(df.to_string(index = False))
 
 
 
-# 4. Printing total spent by store
-print("\n\nTotal Spent by Store")
-store_spending = df.groupby("Transaction_Name")["Amount"].sum()
-print(store_spending.sort_values(ascending = False))
+# Function monthly_transaction()
+# Lists all of the transactions in a month and displays a trend chart
+#
+def monthly_transaction(month_df, selected_month):
+
+    print(f"\n\n\nAll transactions for {selected_month}")
 
 
-
-# 5. Printing total spent by transaction type
-print("\n\nTotal Spent by Transaction Type")
-type_spending = df.groupby("Type")["Amount"].sum()
-print(type_spending.sort_values(ascending = False))
-
-
-
-# 6. Sorting data by month
-# Converting Date column into datetime
-df["Date"] = pd.to_datetime(df["Date"], format = "%d/%m/%Y")
-
-# Identifying available months
-df["Month"] = df["Date"].dt.to_period("M")
-
-months = df["Month"].unique()
-
-
-# Analysing each month seperately
-for month in months:
-    month_df = df[df["Month"] == month]
-
-    print(f"\n\n\nExpense report for {month}")
-
-
-    # 1. Printing all transactions of a month
+    # Printing all transactions of a month
     print(month_df.to_string(index = False))
 
     # Printing total money spent of a month
     total_spent = month_df["Amount"].sum()
     print(f"\n\nTotal spent = {total_spent}")
 
-    # CHART 1: Daily expenditure
+    # CHART: Daily expenditure
     daily_spending = month_df.groupby("Date")["Amount"].sum()
 
     plt.figure(figsize=(10, 5))
     plt.plot(daily_spending.index, daily_spending.values, marker="o")
-    plt.title(f"Daily Expenditure - {month}")
+    plt.title(f"Daily Expenditure - {selected_month}")
     plt.xlabel("Date")
     plt.ylabel("Amount Spent (€)")
     plt.xticks(rotation=35)
@@ -77,36 +66,22 @@ for month in months:
 
 
 
-    # 2. Printing total spent by each category of a month
-    print("\n\nTotal Spent by Category")
-    category_spending = month_df.groupby("Category")["Amount"].sum()
-    print(category_spending.sort_values(ascending = False))
+# Function monthly_store()
+# Displays total spending in a month by store with a bar chart
+#
+def monthly_store(month_df, selected_month):
 
-    # CHART 2: Spending by category
-    plt.figure(figsize=(7, 7))
-    plt.pie(
-        category_spending.values,
-        labels=category_spending.index,
-        autopct="%1.1f%%",
-        startangle=90
-    )
-    plt.title(f"Spending by Category - {month}")
-    plt.tight_layout()
-    plt.show()
+    print(f"\n\nTotal Spent by Store during {selected_month}")
 
-
-
-    # 3. Printing total spent by store of a month
-    print("\n\nTotal Spent by Store")
     store_spending = month_df.groupby("Transaction_Name")["Amount"].sum()
     print(store_spending.sort_values(ascending = False))
-
-    # CHART 3: Spending by store
+    
+    # CHART: Spending by store
     store_spending = store_spending.sort_values(ascending = False)
-
+    
     plt.figure(figsize=(10, 5))
     plt.bar(store_spending.index, store_spending.values)
-    plt.title(f"Spending by Store - {month}")
+    plt.title(f"Spending by Store - {selected_month}")
     plt.xlabel("Stores")
     plt.ylabel("Amount Spent (€)")
     plt.xticks(rotation=35)
@@ -115,12 +90,41 @@ for month in months:
 
 
 
-    # 4. Printing total spent by transaction type of a month
-    print("\n\nTotal Spent by Transaction Type")
+# Function monthly_category()
+# Displays total spending in a month by category with a pie chart
+#
+def monthly_category(month_df, selected_month):
+
+    print(f"\n\nTotal Spent by Category during {selected_month}")
+
+    category_spending = month_df.groupby("Category")["Amount"].sum()
+    print(category_spending.sort_values(ascending = False))
+
+    # CHART: Spending by category
+    plt.figure(figsize=(7, 7))
+    plt.pie(
+        category_spending.values,
+        labels=category_spending.index,
+        autopct="%1.1f%%",
+        startangle=90
+    )
+    plt.title(f"Spending by Category - {selected_month}")
+    plt.tight_layout()
+    plt.show()
+
+
+
+# Function monthly_type()
+# Displays total spending in a month by transaction type with a pie chart
+#
+def monthly_type(month_df, selected_month):
+
+    print(f"\n\nTotal Spent by Transaction Type during {selected_month}")
+
     type_spending = month_df.groupby("Type")["Amount"].sum()
     print(type_spending.sort_values(ascending = False))
 
-    # CHART 4: Spending by transaction type
+    # CHART: Spending by transaction type
     plt.figure(figsize=(7,7))
     plt.pie(
         type_spending.values,
@@ -128,7 +132,86 @@ for month in months:
         autopct="%1.1f%%",
         startangle=90
     )
-    plt.title(f"Spending by Transaction Type - {month}")
+    plt.title(f"Spending by Transaction Type - {selected_month}")
     plt.tight_layout()
     plt.show()
+
+
+
+# Monthly analysis menu
+def monthly_analysis_menu(selected_month):
+
+    # Create a dataframe for the selected month
+    month_df = df[df["Month"] == selected_month]
+
+    while True:
+        print(f"\n\nYou selected {selected_month}")
+        print(f"What do you wish to see from {selected_month}?")
+        print("1. View all transaction this month")
+        print("2. View total spent by store")
+        print("3. View total spent by category")
+        print("4. View total spent by transaction type")
+        print("5. Go back to Main Menu")
+
+        option = int(input("\nSelect an option: "))
+
+        if option == 1:
+            monthly_transaction(month_df, selected_month)
+        
+        elif option == 2:
+            monthly_store(month_df, selected_month)
+        
+        elif option == 3:
+            monthly_category(month_df, selected_month)
+        
+        elif option == 4:
+            monthly_type(month_df, selected_month)
+        
+        elif option == 5:
+            break
+
+        else:
+            print("\nWrong input! Try again")
+            monthly_analysis_menu(selected_month)
+
+
+
+# Selecting functions from the menu
+def menu_selection():
+    selected_option = main_menu()
+
+    if selected_option == 1:
+        all_transactions()
+
+    elif selected_option == 2:
+        selected_month = month_menu()
+        monthly_analysis_menu(selected_month)
+
+    elif selected_option == 3:
+        print("\nYou chose to exit program")
+        exit()
+    
+    else:
+        print("\nWrong input! Try again")
+
+
+
+#*********************************************************************
+# Main program
+#
+# Reading expense.csv
+df = pd.read_csv("data/expense.csv")
+
+
+# Converting Date column into datetime
+df["Date"] = pd.to_datetime(df["Date"], format = "%d/%m/%Y")
+
+# Sorting date by months
+df["Month"] = df["Date"].dt.to_period("M")
+
+months = df["Month"].unique()
+
+while True:
+    menu_selection()
+
 
