@@ -30,10 +30,23 @@ def month_menu():
 
 
 # Function all_transactions()
-# Displays all transactions
+# Displays all transactions and a trend chart with total from each month
 #
 def all_transactions():
     print(df.to_string(index = False))
+
+    # CHART: Monthly expenditure
+    # Total spent each month
+    month_total = df.groupby("Month")["Amount"].sum()
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(month_total.index.astype(str), month_total.values, marker="o")
+    plt.title("Monthly Expenditure Trend")
+    plt.xlabel("Month")
+    plt.ylabel("Amount Spent (€)")
+    plt.xticks(rotation=35)
+    plt.tight_layout()
+    plt.show()
 
 
 
