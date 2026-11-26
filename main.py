@@ -1,16 +1,26 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import subprocess
+
+
+# Clearing terminal function
+def clear_terminal():
+    subprocess.run("cls", shell=True)
+
 
 
 # Main Menu function
 def main_menu():
-    print("\n\n\nEXPENSE TRACKER")
+    print("\n\nEXPENSE TRACKER")
     print("Main Menu")
     print("1. View dashboard")
     print("2. Monthly expense report")
     print("3. Exit program")
 
     option = int(input("\nSelect an option: "))
+
+    clear_terminal()
+
     return option
 
 
@@ -25,6 +35,9 @@ def month_menu():
         i += 1
 
     month_option = int(input("Select a month to analyse: "))
+
+    clear_terminal()
+
     return months[month_option - 1]
 
 
@@ -37,7 +50,7 @@ def dashboard():
     average = month_total.sum() / len(month_total)
 
     # Displaying average monthly spending
-    print(f"\n\nAverage monthly spending = €{average}")
+    print(f"\n\nAverage monthly spending = €{average:.2f}")
 
     # Displaying last 5 transactions
     print("\nLast 5 Transactions")
@@ -52,6 +65,8 @@ def dashboard():
     plt.xticks(rotation=35)
     plt.tight_layout()
     plt.show()
+
+    clear_terminal()
 
 
 
@@ -82,6 +97,8 @@ def monthly_transaction(month_df, selected_month):
     plt.tight_layout()
     plt.show()
 
+    clear_terminal()
+
 
 
 # Function monthly_store()
@@ -105,6 +122,8 @@ def monthly_store(month_df, selected_month):
     plt.xticks(rotation=35)
     plt.tight_layout()
     plt.show()
+
+    clear_terminal()
 
 
 
@@ -130,6 +149,8 @@ def monthly_category(month_df, selected_month):
     plt.tight_layout()
     plt.show()
 
+    clear_terminal()
+
 
 
 # Function monthly_type()
@@ -154,6 +175,8 @@ def monthly_type(month_df, selected_month):
     plt.tight_layout()
     plt.show()
 
+    clear_terminal()
+
 
 
 # Monthly analysis menu
@@ -172,6 +195,7 @@ def monthly_analysis_menu(selected_month):
         print("5. Go back to Main Menu")
 
         option = int(input("\nSelect an option: "))
+        clear_terminal()
 
         if option == 1:
             monthly_transaction(month_df, selected_month)
