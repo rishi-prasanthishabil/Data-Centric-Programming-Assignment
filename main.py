@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 def main_menu():
     print("\n\n\nEXPENSE TRACKER")
     print("Main Menu")
-    print("1. View all transactions")
+    print("1. View dashboard")
     print("2. Monthly expense report")
     print("3. Exit program")
 
@@ -29,16 +29,21 @@ def month_menu():
 
 
 
-# Function all_transactions()
-# Displays all transactions and a trend chart with total from each month
+# Function dashboard()
+# Displays a summary of your expenses
 #
-def all_transactions():
-    print(df.to_string(index = False))
+def dashboard():
+    month_total = df.groupby("Month")["Amount"].sum()
+    average = month_total.sum() / len(month_total)
+
+    # Displaying average monthly spending
+    print(f"\n\nAverage monthly spending = €{average}")
+
+    # Displaying last 5 transactions
+    print("\nLast 5 Transactions")
+    print(df.tail(5).iloc[::-1].to_string(index = False))
 
     # CHART: Monthly expenditure
-    # Total spent each month
-    month_total = df.groupby("Month")["Amount"].sum()
-
     plt.figure(figsize=(10, 5))
     plt.plot(month_total.index.astype(str), month_total.values, marker="o")
     plt.title("Monthly Expenditure Trend")
@@ -194,7 +199,7 @@ def menu_selection():
     selected_option = main_menu()
 
     if selected_option == 1:
-        all_transactions()
+        dashboard()
 
     elif selected_option == 2:
         selected_month = month_menu()
